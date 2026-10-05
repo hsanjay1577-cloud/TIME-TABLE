@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>School Timetable Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <header class="site-header no-print">
+    <div class="container header-inner">
+      <span class="logo-icon" aria-hidden="true"><i class="fa-solid fa-calendar-days"></i></span>
+      <div>
+        <h1>School Timetable Generator</h1>
+        <p>Create and organize your weekly class timetable</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="restoreBar" class="restore-bar no-print" hidden>
+      <span id="restoreText">A saved timetable was found.</span>
+      <button type="button" class="btn btn-small" id="restoreBtn"><i class="fa-solid fa-rotate-left" aria-hidden="true"></i> Restore it</button>
+    </div>
+
+    <section class="card no-print" id="setupCard" aria-labelledby="setupTitle">
+      <h2 id="setupTitle">Class details</h2>
+      <form id="setupForm" novalidate>
+        <div class="grid">
+          <div class="field"><label for="schoolName">School name</label>
+            <input id="schoolName" type="text" maxlength="80" placeholder="ABC Higher Secondary School" autocomplete="off">
+            <small class="error" id="err-schoolName" role="alert"></small></div>
+          <div class="field"><label for="className">Class / Grade</label>
+            <input id="className" type="text" maxlength="20" placeholder="XII" autocomplete="off">
+            <small class="error" id="err-className" role="alert"></small></div>
+          <div class="field"><label for="section">Section</label>
+            <input id="section" type="text" maxlength="10" placeholder="A" autocomplete="off">
+            <small class="error" id="err-section" role="alert"></small></div>
+          <div class="field"><label for="academicYear">Academic year</label>
+            <input id="academicYear" type="text" maxlength="20" placeholder="2026-2027" autocomplete="off">
+            <small class="error" id="err-academicYear" role="alert"></small></div>
+        </div>
+
+        <h3>Timetable settings</h3>
+        <div class="grid">
+          <div class="field"><label for="numDays">Number of days</label>
+            <select id="numDays"><option value="5">5 Days (Mon–Fri)</option><option value="6" selected>6 Days (Mon–Sat)</option></select>
+            <small class="error" id="err-numDays" role="alert"></small></div>
+          <div class="field"><label for="numPeriods">Number of periods</label>
+            <select id="numPeriods"><option>5</option><option>6</option><option>7</option><option selected>8</option><option>9</option></select>
+            <small class="error" id="err-numPeriods" role="alert"></small></div>
+          <div class="field"><label for="startTime">Start time</label>
+            <input id="startTime" type="time" value="09:00">
+            <small class="error" id="err-startTime" role="alert"></small></div>
+          <div class="field"><label for="periodDuration">Period length (minutes)</label>
+            <input id="periodDuration" type="number" min="20" max="120" value="45">
+            <small class="error" id="err-periodDuration" role="alert"></small></div>
+          <div class="field"><label for="breakAfter">Break after period (0 = no break)</label>
+            <input id="breakAfter" type="number" min="0" max="8" value="3">
+            <small class="error" id="err-breakAfter" role="alert"></small></div>
+          <div class="field"><label for="breakDuration">Break length (minutes)</label>
+            <input id="breakDuration" type="number" min="5" max="60" value="15">
+            <small class="error" id="err-breakDuration" role="alert"></small></div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary" id="generateBtn"><i class="fa-solid fa-table" aria-hidden="true"></i> Generate Timetable</button>
+          <button type="button" class="btn" id="sampleBtn"><i class="fa-solid fa-flask" aria-hidden="true"></i> Load Sample Timetable</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card timetable-card" id="timetableCard" aria-labelledby="ttTitle">
+      <div class="card-head no-print">
+        <h2 id="ttTitle">Your weekly timetable</h2>
+        <span class="saved-label" id="lastSaved">Last saved: never</span>
+      </div>
+
+      <div class="toolbar no-print" role="toolbar" aria-label="Timetable actions">
+        <button type="button" class="btn" id="quickFillBtn"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i> Quick Fill</button>
+        <button type="button" class="btn" id="saveBtn"><i class="fa-solid fa-floppy-disk" aria-hidden="true"></i> Save Timetable</button>
+        <button type="button" class="btn" id="loadBtn"><i class="fa-solid fa-folder-open" aria-hidden="true"></i> Load Timetable</button>
+        <button type="button" class="btn" id="printBtn"><i class="fa-solid fa-print" aria-hidden="true"></i> Print</button>
+        <button type="button" class="btn" id="pdfBtn"><i class="fa-solid fa-file-pdf" aria-hidden="true"></i> Download PDF</button>
+        <button type="button" class="btn btn-danger" id="clearBtn"><i class="fa-solid fa-trash" aria-hidden="true"></i> Clear All</button>
+      </div>
+
+      <div id="printArea" class="print-area">
+        <div id="ttInfo" class="tt-info" hidden></div>
+        <div id="tableWrap" class="table-wrap"></div>
+      </div>
+      <p class="hint no-print" id="tableHint" hidden>Tip: click any box in the timetable to add or edit a subject.</p>
+    </section>
+
+    <section class="card no-print" aria-labelledby="howTitle">
+      <h2 id="howTitle">How it works</h2>
+      <ol class="steps">
+        <li>Fill in the class details and choose days, periods and break.</li>
+        <li>Select <strong>Generate Timetable</strong> to see the weekly table.</li>
+        <li>Click any box to enter the subject, teacher and room, or use <strong>Quick Fill</strong>.</li>
+        <li>Save it in your browser, print it, or download it as a PDF.</li>
+      </ol>
+    </section>
+  </main>
+
+  <footer class="site-footer no-print">
+    <div class="container">
+      <strong>School Timetable Generator</strong>
+      <p>Designed for simple and organized timetable management.</p>
+    </div>
+  </footer>
+
+  <!-- Edit slot dialog -->
+  <dialog id="slotDialog" aria-labelledby="slotTitle">
+    <form id="slotForm" novalidate>
+      <h2 id="slotTitle">Edit period</h2>
+      <p class="dialog-sub" id="slotSub"></p>
+      <div class="field"><label for="slotSubjectSelect">Subject</label>
+        <select id="slotSubjectSelect"></select></div>
+      <div class="field" id="customWrap" hidden><label for="slotSubjectCustom">Custom subject name</label>
+        <input id="slotSubjectCustom" type="text" maxlength="40" autocomplete="off"></div>
+      <div class="field"><label for="slotTeacher">Teacher (optional)</label>
+        <input id="slotTeacher" type="text" maxlength="40" placeholder="Mr. Ravi" autocomplete="off"></div>
+      <div class="field"><label for="slotRoom">Room (optional)</label>
+        <input id="slotRoom" type="text" maxlength="20" placeholder="101" autocomplete="off"></div>
+      <small class="error" id="err-slot" role="alert"></small>
+      <div class="dialog-actions">
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn" id="slotCancel">Cancel</button>
+        <button type="button" class="btn btn-danger" id="slotClear">Clear</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Confirm clear dialog -->
+  <dialog id="confirmDialog" aria-labelledby="confirmTitle">
+    <h2 id="confirmTitle">Clear the whole timetable?</h2>
+    <p class="dialog-sub">All subjects, teachers and rooms will be removed. Your saved copy stays unchanged.</p>
+    <div class="dialog-actions">
+      <button type="button" class="btn btn-danger" id="confirmYes">Clear All</button>
+      <button type="button" class="btn" id="confirmNo">Cancel</button>
+    </div>
+  </dialog>
+
+  <div id="toasts" class="toasts no-print" aria-live="polite"></div>
+  <div id="pdfStage" class="pdf-stage" aria-hidden="true"></div>
+
+  <!-- html2pdf.js (client-side PDF export) loaded from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

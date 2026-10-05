@@ -1,0 +1,168 @@
+/* ===== School Timetable Generator - styles ===== */
+:root {
+  --accent: #1a5f7a;
+  --accent-dark: #134a5f;
+  --accent-soft: #e6f1f5;
+  --bg: #f5f7f9;
+  --card: #ffffff;
+  --text: #1c2b33;
+  --muted: #5b6b75;
+  --line: #dbe3e8;
+  --danger: #b3261e;
+  --radius: 14px;
+  --shadow: 0 2px 10px rgba(20, 50, 70, 0.07);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.container { width: min(1120px, 100% - 32px); margin: 0 auto; }
+[hidden] { display: none !important; }
+
+/* ----- Header / footer ----- */
+.site-header { background: var(--card); border-bottom: 1px solid var(--line); }
+.header-inner { display: flex; align-items: center; gap: 16px; padding: 20px 0; }
+.logo-icon {
+  display: grid; place-items: center; width: 52px; height: 52px; flex: none;
+  border-radius: 14px; background: var(--accent); color: #fff; font-size: 24px;
+}
+.site-header h1 { margin: 0; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.01em; }
+.site-header p { margin: 2px 0 0; color: var(--muted); }
+.site-footer { margin-top: 32px; padding: 24px 0; border-top: 1px solid var(--line); background: var(--card); text-align: center; }
+.site-footer p { margin: 4px 0 0; color: var(--muted); font-size: 0.9rem; }
+
+/* ----- Cards ----- */
+main { padding: 24px 0 0; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+  box-shadow: var(--shadow); padding: 24px; margin-bottom: 20px;
+}
+.card h2 { margin: 0 0 16px; font-size: 1.2rem; }
+.card h3 { margin: 24px 0 12px; font-size: 1rem; color: var(--muted); }
+.card-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px; }
+.saved-label { color: var(--muted); font-size: 0.85rem; }
+
+/* ----- Forms ----- */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+label { font-weight: 600; font-size: 0.9rem; }
+input, select {
+  font: inherit; padding: 10px 12px; border: 1px solid #b9c6ce; border-radius: 10px;
+  background: #fff; color: var(--text); width: 100%;
+}
+input[aria-invalid="true"] { border-color: var(--danger); }
+.error { color: var(--danger); font-size: 0.82rem; min-height: 1.1em; }
+
+:focus-visible { outline: 3px solid #f2a93b; outline-offset: 2px; }
+
+/* ----- Buttons ----- */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; font: inherit; font-weight: 600;
+  padding: 10px 16px; border-radius: 10px; border: 1px solid #b9c6ce;
+  background: #fff; color: var(--text); cursor: pointer; transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover { background: var(--accent-soft); border-color: var(--accent); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+.btn-danger { color: var(--danger); border-color: #e3b5b2; }
+.btn-danger:hover { background: #fbeceb; border-color: var(--danger); }
+.btn-small { padding: 6px 12px; font-size: 0.9rem; }
+.actions, .toolbar, .dialog-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.toolbar { margin: 0 0 20px; }
+
+.restore-bar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+  background: var(--accent-soft); border: 1px solid #b7d4df; border-radius: var(--radius);
+  padding: 12px 16px; margin-bottom: 20px;
+}
+
+/* ----- Timetable ----- */
+.tt-info { display: flex; flex-wrap: wrap; gap: 8px 28px; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 2px solid var(--accent); }
+.tt-info .tt-school { font-size: 1.3rem; font-weight: 800; width: 100%; }
+.tt-info span { color: var(--muted); font-weight: 600; }
+.table-wrap { overflow-x: auto; }
+table.timetable { width: 100%; min-width: 720px; border-collapse: separate; border-spacing: 4px; table-layout: fixed; }
+.timetable th { padding: 10px 6px; font-size: 0.9rem; }
+.timetable thead th { background: var(--accent); color: #fff; border-radius: 8px; }
+.timetable thead th:first-child { width: 120px; }
+.timetable tbody th {
+  background: var(--accent-soft); border-radius: 8px; font-weight: 600; font-size: 0.8rem;
+  color: var(--accent-dark); text-align: center;
+}
+.timetable tbody th span { display: block; font-weight: 800; font-size: 0.9rem; }
+.timetable td { padding: 0; vertical-align: top; }
+.break-cell {
+  background: repeating-linear-gradient(45deg, #fdf3dc, #fdf3dc 8px, #fbeacb 8px, #fbeacb 16px);
+  border-radius: 8px; text-align: center; padding: 8px; font-weight: 800; color: #7a5a12; letter-spacing: 0.05em;
+}
+.slot {
+  display: block; width: 100%; min-height: 76px; text-align: left; font: inherit; cursor: pointer;
+  padding: 8px 10px; border: 0; border-left: 4px solid var(--bar, var(--line));
+  border-radius: 8px; background: var(--bg-slot, #fff); color: var(--text);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+.slot:hover { box-shadow: 0 2px 8px rgba(20, 50, 70, 0.18); transform: translateY(-1px); }
+.slot-subject { font-weight: 800; font-size: 0.95rem; line-height: 1.25; }
+.slot-meta { font-size: 0.8rem; color: #3d4d56; }
+.slot-empty { border: 1px dashed #b9c6ce; background: #fafcfd; color: var(--muted); font-weight: 600; text-align: center; padding-top: 26px; }
+.hint { color: var(--muted); font-size: 0.85rem; margin: 12px 0 0; }
+
+.empty-state { text-align: center; padding: 40px 16px; }
+.empty-icon { font-size: 3rem; }
+.empty-state h3 { margin: 8px 0 4px; font-size: 1.2rem; color: var(--text); }
+.empty-state p { margin: 0 0 18px; color: var(--muted); }
+
+.steps { margin: 0; padding-left: 20px; color: var(--muted); }
+.steps li { margin-bottom: 6px; }
+.steps strong { color: var(--text); }
+
+/* ----- Dialogs ----- */
+dialog { border: 0; border-radius: var(--radius); padding: 24px; width: min(440px, 92vw); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25); color: var(--text); }
+dialog::backdrop { background: rgba(20, 35, 45, 0.5); }
+dialog h2 { margin: 0 0 4px; font-size: 1.15rem; }
+.dialog-sub { margin: 0 0 16px; color: var(--muted); font-size: 0.9rem; }
+dialog .field { margin-bottom: 12px; }
+
+/* ----- Toasts ----- */
+.toasts { position: fixed; right: 16px; bottom: 16px; display: flex; flex-direction: column; gap: 8px; z-index: 50; max-width: calc(100vw - 32px); }
+.toast { background: #1c2b33; color: #fff; padding: 12px 16px; border-radius: 10px; box-shadow: var(--shadow); font-weight: 600; border-left: 5px solid #5fbf8f; }
+.toast.error { border-left-color: #ef7b72; }
+
+/* Hidden off-screen stage used to render the PDF */
+.pdf-stage { position: fixed; left: -10000px; top: 0; width: 1120px; background: #fff; padding: 16px; }
+.pdf-stage .table-wrap { overflow: visible; }
+.pdf-stage table.timetable { min-width: 0; }
+.pdf-stage .slot-empty { visibility: hidden; }
+
+/* ----- Responsive ----- */
+@media (max-width: 640px) {
+  .site-header h1 { font-size: 1.25rem; }
+  .card { padding: 16px; }
+  .btn { padding: 10px 12px; }
+  .toolbar .btn { flex: 1 1 calc(50% - 10px); justify-content: center; }
+}
+
+/* ----- Print: A4 landscape, timetable only ----- */
+@page { size: A4 landscape; margin: 10mm; }
+@media print {
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff; }
+  .no-print { display: none !important; }
+  .container { width: 100%; }
+  main { padding: 0; }
+  .card { border: 0; box-shadow: none; padding: 0; margin: 0; }
+  .table-wrap { overflow: visible; }
+  table.timetable { min-width: 0; font-size: 11px; }
+  .slot { min-height: 0; padding: 4px 6px; box-shadow: none; transform: none; }
+  .slot-subject { font-size: 12px; }
+  .slot-meta { font-size: 10px; }
+  .slot-empty { visibility: hidden; }
+  .timetable tr { break-inside: avoid; }
+}
